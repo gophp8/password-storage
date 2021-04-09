@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{
+    AuthController,
+    InstallController,
+    PasswordManagementController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/install', [InstallController::class, 'install'])->name('install');
+
+Route::middleware(['auth.password.management'])->group(function() {
+    Route::resource('password', PasswordManagementController::class);
+    Route::get('random-password', [PasswordManagementController::class, 'randomPassword'])
+        ->name('password-management.random-password');
 });
